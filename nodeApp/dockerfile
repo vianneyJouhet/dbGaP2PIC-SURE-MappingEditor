@@ -1,0 +1,11 @@
+FROM node:latest
+
+WORKDIR /app
+
+ADD ./scripts/start.sh /scripts/start.sh
+RUN chmod +x /scripts/start.sh
+RUN ls -l
+WORKDIR /scripts
+RUN ls -l
+# RUN  sh start.sh
+ENTRYPOINT ["sh","start.sh"]

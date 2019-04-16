@@ -1,0 +1,11 @@
+version: '3.3'
+
+services:
+
+ node:
+  build: ./nodeApp
+  ports:
+   - 127.0.0.1:3000:3000
+   - 127.0.0.1:8080:8080
+  volumes:
+    - ./nodeApp/app:/app/

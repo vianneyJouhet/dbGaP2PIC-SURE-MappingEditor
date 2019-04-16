@@ -1,0 +1,14 @@
+{
+  "name": "simple-rest-api",
+  "version": "1.0.0",
+  "main": "app.js",
+  "dependencies": {
+    "express": "^4.16.3",
+    "nodemon": "^1.18.11",
+    "jstree": "^3.3.7",
+    "body-parser": ""
+  },
+  "scripts": {
+    "start": "node app.js"
+  }
+}
