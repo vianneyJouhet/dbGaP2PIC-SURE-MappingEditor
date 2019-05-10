@@ -1,7 +1,7 @@
 exports.buildPathFromJsTree = function (json){
   var paths = [];
   for(i in json){
-    var path = "\\" +json[i].text +"\\";
+    var path = "\\" +json[i].text.trim() +"\\";
     if(json[i].data.initialPath){
       var pathAdd = {};
       pathAdd.before = json[i].data.initialPath;
@@ -21,7 +21,7 @@ exports.buildPathFromJsTree = function (json){
 
 function addChildrens(pathBefore,childrens,paths){
   for(i in childrens){
-    var pahtAfter = pathBefore  + childrens[i].text + "\\"
+    var pahtAfter = pathBefore  + childrens[i].text.trim() + "\\"
     if(childrens[i].data.initialPath){
       var pathAdd = {};
       pathAdd.before = childrens[i].data.initialPath;

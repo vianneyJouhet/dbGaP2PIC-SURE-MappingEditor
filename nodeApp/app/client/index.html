@@ -1,0 +1,227 @@
+
+<html>
+<head>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  <script src="FileSaver.js" ></script>
+  <!-- <script src="pathBuilder.js" ></script> -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/jstree/3.3.5/themes/default/style.min.css" />
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jstree/3.3.5/jstree.min.js"></script>
+  <script src="dbGaP.js"></script>
+
+<head>
+  <body>
+
+    <div class="container-fluid">
+
+      <!-- Menu du Haut -->
+      <div class="row bg-dark text-light">
+        <div class="form-group m-2">
+          <div class="dropdown">
+            <div class="form-group">
+              <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownProjects" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Select a project !
+              </button>
+              <div class="dropdown-menu" aria-labelledby="dropdownProjects" id="listProjects">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group ml-2">
+          <label for="projectLabel">Project</label>
+          <input class="form-control" id="projectLabel" readonly>
+        </div>
+        <div class="form-group ml-2">
+          <label for="projectVersion">Version</label>
+          <input class="form-control" id="projectVersion" readonly>
+        </div>
+        <div class="form-group ml-2">
+          <button type="button" class="btn btn-primary mt-2" id="previous">Previous</button>
+          <button type="button" class="btn btn-primary mt-2" id="next">Next</button>
+          <button type="button" class="btn btn-success mt-2" id="show">Show</button>
+                <div id = "studyId">
+          </div>
+        </div>
+      </div>
+
+
+      <div class="row">
+
+        <!-- Menu de gauche -->
+        <div class="col bg-dark text-light">
+          <div class="col">
+            <div class="form-group">
+              <label for="autoNumber">Auto Number</label>
+              <input class="form-control" id="autoNumber">
+            </div>
+
+            <!-- Panels for adding class -->
+            <ul class="nav nav-pills">
+              <li class="nav-item">
+                <a class="nav-link active" data-toggle="tab" href="#dbgapAdd" id="tabDbgapAdd" >Use dbGap</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link"   data-toggle="tab" href="#manualAdd" id="tabManualAdd">Manual</a>
+              </li>
+            </ul>
+            <div class="tab-content" id = "addMethods">
+              <!-- Add using dbGap -->
+              <div class="tab-pane active" id="dbgapAdd" role ="tabpanel" >
+                <div class="form-group">
+                  <label for="fatherLab">Class to create</label>
+                  <input class="form-control" id="fatherLab">
+                </div>
+                <div class="form-group">
+                  <label for="listeVar">List of variables</label>
+                  <textarea class="form-control" id="listeVar" rows="3"></textarea>
+                  <button type="button" class="btn btn-success mt-2" id="addFils">Add to class</button>
+                </div>
+              </div>
+              <!-- Add Manually -->
+              <div class="tab-pane" id="manualAdd" role ="tabpanel" >
+                <div class="form-group">
+                  <label for="targetClass">Target Class</label>
+                  <textarea class="form-control" id="targetClass" rows="3"></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col">
+            <div class="form-group">
+              <button type="button" class="btn btn-primary mt-2 invisible" id="save">Save</button>
+              <button type="button" class="btn btn-danger mt-2 invisible" id="build">build mappings</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Main Part (jsTree) -->
+        <div class="col-5 pl-5">
+          <div class="row ">
+            <div class="form-group">
+              <label for="search">Search</label>
+              <input class="form-control" type="text" id="search" value="">
+            </div>
+          </div>
+          <div class="row">
+            <div id="tree"></div>
+          </div>
+        </div>
+        <!-- Main Part (dbgap) -->
+        <div class="col-5 mt-4 pl-5" >
+              <div class="border" id = "dbgap"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal For ordering -->
+    <div class="modal" tabindex="-1" role="dialog" id = "orderModal">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Extract order for childs</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+            <input class="form-control invisible" id="orderTargetClass" readonly >
+            <input class="form-control" id="orderTargetLabel" readonly>
+            </div>
+            <ul class="nav nav-pills">
+              <li class="nav-item">
+                <a class="nav-link active" data-toggle="tab" href="#regexOrder" id="tabRegexOrder" >Order with regex from label</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link"   data-toggle="tab" href="#simpleOrder" id="tabSimpleOrder">Order by dbgap name</a>
+              </li>
+            </ul>
+            <div class="tab-content" id = "orderingMethods">
+              <div class="tab-pane active" id="regexOrder" role ="tabpanel" >
+                <div class="form-group">
+                  <label for="regex">Regex</label>
+                  <input class="form-control" id="regex"></input>
+                </div>
+                <div class="form-group">
+                  <label for="regexResult">Result</label>
+                  <textarea class="form-control" id="regexResult" rows="8" readonly ></textarea>
+                </div>
+              </div>
+              <div class="tab-pane" id="simpleOrder" role ="tabpanel" >
+                <div class="tab-pane active" id="regexOrder" role ="tabpanel" >
+                  <div class="form-group">
+                    <label for="regexResult">Result</label>
+                    <textarea class="form-control" id="simpleOrderResult" rows="8" readonly ></textarea>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" id ="previewOrdering">Preview</button>
+            <button type="button" class="btn btn-danger invisible" id ="executeOrdering" >Execute</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+        <!-- Modal For data viz -->
+    <div class="modal" tabindex="-1" role="dialog" id = "dataModal">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Detail data</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <label for="detailNodeLabel">Label</label>
+              <input class="form-control" id="detailNodeLabel" readonly >
+              <label for="detailNodeVarName">Variable Name</label>
+              <input class="form-control" id="detailNodeVarName" readonly >
+              <label for="detailNodeIdentifier">DbGap Identifier</label>
+              <input class="form-control" id="detailNodeIdentifier" readonly >
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- jquery Scripts -->
+    <script src="ordering.js"></script>
+    <script src="filesProject.js"></script>
+    <script src="filesProject.js"></script>
+    <script src="jsTree.js"></script>
+    <script>
+      $(document).ready(function(){
+         $('#projectLabel').val("");
+         $('#projectVersion').val("");
+         $('#exploredClass').val("");
+         $('#fatherLab').val("");
+         $('#listeVar').val("");
+         $('#targetClass').val("");
+         $('#autoNumber').val("01");
+         var uri = "http://localhost:3000/projects"
+         $.ajax({
+           url: uri,
+           type: 'GET',
+         }).done(function(data){
+           for(i in data){
+             console.log(data[i]);
+             $('#listProjects').append('<a class="dropdown-item project-item" id="'+data[i]+'"href="#">'+data[i]+'</a>');
+           }
+         })
+       })
+
+    </script>
+  </body>
+</html>

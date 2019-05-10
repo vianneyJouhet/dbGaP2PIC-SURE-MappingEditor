@@ -3,12 +3,12 @@
   "version": "1.0.0",
   "main": "app.js",
   "dependencies": {
-    "express": "^4.16.3",
-    "nodemon": "^1.18.11",
-    "jstree": "^3.3.7",
+    "express": "",
+    "nodemon": "",
+    "jstree": "",
     "body-parser": ""
   },
   "scripts": {
-    "start": "node app.js"
+    "start": "node ./app.js"
   }
 }
