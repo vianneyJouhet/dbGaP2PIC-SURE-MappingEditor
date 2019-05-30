@@ -14,6 +14,12 @@ app.use(express.static('client/js'));
 app.use(bodyParser.json({limit: '50mb'}));
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
 
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
+
 app.get("/", (req, res) => res.sendFile(path.join(__dirname+"/client/index.html")));
 
 function addChildrens(currentNode){
